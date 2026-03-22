@@ -4,6 +4,8 @@ from app.api.routes import auth
 from app.core.config import settings
 from contextlib import asynccontextmanager
 from app.db.init_db import init_db
+from app.api.routes import auth, interview
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,6 +23,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/api")
+app.include_router(interview.router, prefix="/api")
 
 @app.get("/")
 async def root():
