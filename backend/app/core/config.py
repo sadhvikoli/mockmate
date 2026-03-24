@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     
     ANTHROPIC_API_KEY: str
 
+    GEMINI_API_KEY: str = "AIzaSyAthSqcIFVQHY18AumXxD1kXggrDz_9wfo"
+
     class Config:
         env_file = ".env"
 
