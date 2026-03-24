@@ -5,20 +5,21 @@ An AI-powered mock interview platform that helps developers practice technical i
 ## Features
 
 - 🔐 JWT-based authentication (register, login)
-- 🤖 AI-generated interview questions powered by Claude API
-- 📝 Real-time answer submission and feedback
-- 📊 Performance tracking across sessions
+- 🤖 AI-generated interview questions powered by Gemini API
+- 📝 Real-time answer submission and AI feedback
+- 📊 Performance scoring across sessions
 - ⚡ Redis caching for fast question delivery
-- 🐳 Dockerized for easy deployment
+- 🐘 PostgreSQL for persistent session storage
 
 ## Tech Stack
 
 **Backend**
 - FastAPI (Python) — REST API
 - PostgreSQL — primary database
-- Redis — caching layer
-- SQLAlchemy — ORM
+- Redis — question caching layer
+- SQLAlchemy — async ORM
 - JWT + bcrypt — authentication
+- Google Gemini — AI question generation and feedback
 
 **Frontend**
 - React + Vite
@@ -36,7 +37,6 @@ An AI-powered mock interview platform that helps developers practice technical i
 ### Backend Setup
 ```bash
 cd backend
-uv install
 cp .env.example .env  # add your keys
 uv run uvicorn app.main:app --reload
 ```
@@ -48,27 +48,46 @@ npm install
 npm run dev
 ```
 
+### Environment Variables
+```
+DATABASE_URL=postgresql+asyncpg://localhost/mockmate
+REDIS_URL=redis://localhost:6379
+SECRET_KEY=your-secret-key
+GEMINI_API_KEY=your-gemini-api-key
+```
+
 ## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | `/api/auth/register` | Register new user |
 | POST | `/api/auth/login` | Login and get JWT token |
-| POST | `/api/interview/start` | Start a mock interview |
-| POST | `/api/interview/answer` | Submit an answer |
-| GET  | `/api/interview/sessions` | Get session history |
+| POST | `/api/interview/start` | Start a session, generates AI questions |
+| GET  | `/api/interview/sessions` | Get all past sessions |
+| GET  | `/api/interview/sessions/{id}` | Get session detail and feedback |
+| POST | `/api/interview/sessions/{id}/answer` | Submit an answer |
+| POST | `/api/interview/sessions/{id}/complete` | Complete session, trigger AI feedback |
+
+## How It Works
+
+1. User registers and logs in — receives a JWT token
+2. User starts a mock interview for a specific role and difficulty
+3. Gemini AI generates 5 tailored interview questions
+4. User submits answers one by one
+5. User completes the session — Gemini evaluates each answer in the background
+6. User receives a score out of 10 with strengths, improvements, and ideal answers
 
 ## Project Structure
 ```
 mockmate/
 ├── backend/
 │   ├── app/
-│   │   ├── api/routes/    # API endpoints
-│   │   ├── core/          # config, security
-│   │   ├── db/            # database setup
-│   │   ├── models/        # database tables
-│   │   ├── schemas/       # request/response shapes
-│   │   └── services/      # business logic
+│   │   ├── api/routes/    # auth and interview endpoints
+│   │   ├── core/          # config, security, JWT
+│   │   ├── db/            # database setup and init
+│   │   ├── models/        # PostgreSQL table definitions
+│   │   ├── schemas/       # request and response shapes
+│   │   └── services/      # AI, caching, interview logic
 │   └── main.py
 └── frontend/
     └── src/
@@ -76,4 +95,7 @@ mockmate/
 
 ## Status
 
-🚧 In active development — Week 1 of 4
+✅ Week 1 — Backend, auth, database complete  
+✅ Week 2 — AI integration, Redis caching complete  
+🚧 Week 3 — React frontend in progress  
+⬜ Week 4 — Docker, CI/CD, deployment
