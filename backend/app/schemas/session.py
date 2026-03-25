@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from uuid import UUID
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Any
 
 class SessionCreate(BaseModel):
     role: str
@@ -12,6 +12,7 @@ class SessionResponse(BaseModel):
     role: str
     difficulty: str
     questions: List[str]
+    feedback: List[Any] = []
     score: Optional[int]
     status: str
     created_at: datetime
